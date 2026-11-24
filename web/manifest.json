@@ -1,0 +1,22 @@
+{
+ "name": "Cielo di Einstein@Home",
+ "short_name": "Cielo E@H",
+ "start_url": "../",
+ "scope": "../",
+ "display": "fullscreen",
+ "background_color": "#02030a",
+ "theme_color": "#02030a",
+ "orientation": "any",
+ "icons": [
+  {
+   "src": "cielo_einstein.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icona.png",
+   "sizes": "256x256",
+   "type": "image/png"
+  }
+ ]
+}

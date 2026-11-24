@@ -1,0 +1,83 @@
+CIELO DI EINSTEIN@HOME 1.1
+==========================
+© 2026 Edoardo Battistel
+
+Una versione più ricca del salvaschermo di Einstein@Home: una sfera celeste 3D che
+ruota da sola, con la Terra al centro e oggetti veri presi dai cataloghi.
+
+COSA SI VEDE
+  - Terra al centro, girata come adesso (tempo siderale vero) e illuminata dal Sole
+    di adesso, con LIGO Hanford, LIGO Livingston, Virgo, KAGRA, GEO600, Arecibo,
+    Parkes e il satellite Fermi in orbita. Le linee azzurre mostrano dove guardano
+    adesso i rivelatori (lo zenit).
+  - Stelle fino alla magnitudine 5,8, costellazioni con i nomi, Via Lattea e piano
+    galattico, equatore celeste ed eclittica, il Sole dove si trova oggi.
+  - Pulsar radio (catalogo ATNF, circa 3.700): verde acqua le normali, azzurre quelle
+    al millisecondo, anello magenta quelle viste anche da Fermi nei raggi gamma
+    (le pulsar cercate dai compiti FGRP/LATeah), rosse le magnetar.
+  - Sorgenti gamma di Fermi senza identificazione (spente all'inizio: si accendono
+    nel pannello).
+  - Resti di supernova (catalogo di Green, 310), quasar con V < 16,5 (Véron-Cetty).
+  - Onde gravitazionali (GWOSC + GraceDB): per ogni evento la zona di cielo al 90 %.
+    Clic su un evento (o «Elenco onde gravitazionali») e la sua zona si accende.
+
+COME SI USA
+  - Trascina col mouse per girare la sfera, rotellina o + − per avvicinarti,
+    frecce per girare. Su portatile: i pulsanti in basso a destra.
+  - Clic su un oggetto o su un nome: scheda con i dati e una spiegazione; per le
+    pulsar «Ascolta» fa sentire il battito alla velocità vera.
+  - «Dall'interno»: il cielo visto dal centro, come in un planetario.
+  - S = salvaschermo (schermo intero, una cartolina ogni 16 secondi; si esce
+    muovendo il mouse o con un tasto). F = schermo intero. Spazio = ferma/riparti.
+  - Nel pannello si può far partire il salvaschermo da solo dopo qualche minuto,
+    e scegliere la grandezza dei pallini (avvicinandosi diventano anche più grandi).
+
+AVVIO
+  Una volta sola, per creare il programma:
+      cd ~/Claude/Astropy/programma_cielo_einstein/versione_1.1
+      bash crea_eseguibile_ubuntu.sh
+  Nasce la cartella CieloEinstein (qui accanto) con dentro il programma pronto
+  (non serve Python), l'icona e questo LEGGIMI; sulla Scrivania compare l'icona
+  «Cielo di Einstein@Home» (la prima volta: tasto destro → «Consenti avvio»).
+  Tasto destro sull'icona nel menu: «Salvaschermo» e «Riscarica tutti i cataloghi».
+  Senza compilare:           python3 cielo_einstein.py
+
+  Se c'è Chrome/Chromium la pagina si apre in una finestra a sé (come un'app),
+  altrimenti nel browser predefinito. Chiusa la finestra, il programma si chiude
+  da solo dopo un paio di minuti.
+  Funziona solo su questo computer (non è raggiungibile da altri dispositivi).
+
+CATALOGHI E AGGIORNAMENTO
+  La prima volta la finestra mostra lo scaricamento (qualche minuto: le mappe
+  delle onde gravitazionali sono centinaia). Poi, a ogni avvio, la pagina si apre
+  subito con i dati che ci sono e i cataloghi si aggiornano in sottofondo; quando
+  i dati nuovi sono pronti compare «Carica i dati nuovi» (nel salvaschermo, o se
+  non tocchi niente da 2 minuti, si ricarica da sola). Le mappe GW già scaricate
+  non si riscaricano: si aggiungono solo gli eventi nuovi.
+
+  Cartella dei dati: ~/Scrivania/Astronomia/Cielo_Einstein  (cache/ = file scaricati,
+  dati.json = dati per la pagina, cielo_einstein.log = messaggi dell'app).
+  Per cambiarla:  CieloEinstein --cartella <cartella>
+
+OPZIONI
+  --salvaschermo         parte già in salvaschermo (con Chrome a schermo intero)
+  --prepara [--riscarica] rifà i dati subito (con --riscarica: scarica tutto da capo)
+  --senza-aggiornare     non aggiorna i cataloghi all'avvio
+  --resta-aperto         non si chiude quando si chiude la finestra
+  --senza-browser        non apre la pagina
+  --autotest             prova senza rete
+
+FONTI
+  ATNF Pulsar Catalogue (Manchester et al. 2005); Fermi-LAT 4FGL-DR4 (riserva
+  4FGL-DR3 da VizieR); D. A. Green, catalogo dei resti di supernova galattici
+  (VizieR VII/297); Véron-Cetty & Véron 2010 (VizieR VII/258); GWOSC e GraceDB
+  (LIGO-Virgo-KAGRA); d3-celestial di Olaf Frohn (stelle, costellazioni, Via Lattea);
+  Natural Earth / world-atlas (continenti); Three.js.
+
+FILE
+  cielo_einstein.py   programma (server locale, avvio, aggiornamento, autotest)
+  dati_cielo.py       scarica e prepara i cataloghi (FITS e HEALPix senza astropy)
+  web/index.html, web/app.js   pagina 3D
+  crea_icona.py       disegna l'icona (web/cielo_einstein.png, .ico, icona.png)
+  crea_eseguibile_ubuntu.sh   crea la cartella CieloEinstein e l'icona sulla Scrivania
+  crea_eseguibile_windows.bat (Windows: eseguibile in dist e collegamento sul Desktop)

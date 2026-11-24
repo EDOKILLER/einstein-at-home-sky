@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#02030a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cielo E@H">
+<link rel="manifest" href="./web/manifest.json">
+<link rel="apple-touch-icon" href="./web/cielo_einstein.png">
+<title>Cielo di Einstein@Home</title>
+<link rel="icon" type="image/png" href="./web/icona.png">
+<style>
+  :root {
+    --fondo: #02030a; --pannello: rgba(12, 16, 30, 0.92); --bordo: #283454; --testo: #e8edf9;
+    --tenue: #9ba9c6; --accento: #6cb4ff; --oro: #ffd36b; --base: 19px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--fondo); color: var(--testo); overflow: hidden;
+    font: var(--base)/1.4 "Segoe UI", "Ubuntu", "Noto Sans", system-ui, sans-serif; }
+  #scena { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: block; }
+  .pannello { position: fixed; background: var(--pannello); border: 1px solid var(--bordo); border-radius: 12px;
+    backdrop-filter: blur(6px); }
+  #sx { top: 12px; left: 12px; width: 350px; max-height: calc(100% - 24px); overflow-y: auto; padding: 14px 16px; z-index: 4; }
+  #sx h1 { font-size: 1.4em; margin: 0 0 2px; }
+  #sx .sotto { color: var(--tenue); font-size: .78em; margin-bottom: 10px; }
+  h2 { font-size: .82em; text-transform: uppercase; letter-spacing: .08em; color: var(--tenue); margin: 14px 0 6px; }
+  .bottoni { display: flex; gap: 6px; flex-wrap: wrap; }
+  button, select { font: inherit; font-size: .9em; color: var(--testo); background: #17213a; border: 1px solid var(--bordo);
+    border-radius: 8px; padding: 7px 11px; cursor: pointer; }
+  button:hover { background: #22304f; }
+  button.attivo { background: #1f4f8a; border-color: var(--accento); }
+  button:disabled { opacity: .45; cursor: default; }
+  input[type=search] { width: 100%; font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--bordo);
+    background: #0a1120; color: var(--testo); }
+  #risultati div, #elenco_gw div { padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: .88em; }
+  #risultati div:hover, #elenco_gw div:hover { background: #1b2742; }
+  #risultati small, #elenco_gw small { color: var(--tenue); }
+  #elenco_gw { max-height: 260px; overflow-y: auto; }
+  label.casella { display: flex; align-items: center; gap: 8px; padding: 3px 0; cursor: pointer; font-size: .9em; }
+  label.casella input { width: 20px; height: 20px; accent-color: var(--accento); flex: none; }
+  .pallino { width: 12px; height: 12px; border-radius: 50%; display: inline-block; flex: none; }
+  .pallino.anello { background: transparent !important; border: 2px solid; }
+  .num { color: var(--tenue); font-size: .85em; margin-left: auto; }
+  input[type=range] { width: 100%; accent-color: var(--accento); }
+  details summary { cursor: pointer; color: var(--tenue); font-size: .82em; text-transform: uppercase; letter-spacing: .08em;
+    margin: 14px 0 6px; }
+  #dx { top: 12px; right: 12px; width: 420px; max-height: calc(100% - 24px); overflow-y: auto; padding: 14px 16px;
+    display: none; z-index: 4; }
+  #dx h3 { font-size: 1.4em; margin: 6px 0 2px; }
+  #dx .comune { color: var(--oro); margin-bottom: 6px; }
+  #dx .tipo { display: inline-block; font-size: .8em; padding: 2px 9px; border-radius: 10px; border: 1px solid var(--c);
+    color: var(--c); margin-bottom: 6px; }
+  #dx p { font-size: .9em; margin: 8px 0; }
+  #dx table { width: 100%; border-collapse: collapse; font-size: .9em; }
+  #dx td { padding: 3px 0; vertical-align: top; }
+  #dx td:first-child { color: var(--tenue); width: 42%; }
+  #dx .bottoni { margin-top: 8px; }
+  #dx .bottoni > * { flex: 1 1 45%; }
+  .nota { background: #3a2c10; border: 1px solid #7a5a16; color: #ffe2a0; border-radius: 8px; padding: 6px 9px;
+    font-size: .84em; margin: 8px 0; }
+  .eah { background: #12304a; border: 1px solid #2c6a9a; color: #cfe8ff; border-radius: 8px; padding: 6px 9px;
+    font-size: .84em; margin: 8px 0; }
+  #chiudi { float: right; padding: 2px 9px; }
+  a.link { display: block; text-align: center; text-decoration: none; color: var(--testo); background: #1b3a2a;
+    border: 1px solid #2f6a4a; border-radius: 8px; padding: 7px 11px; font-size: .88em; }
+  a.link:hover { background: #24503a; }
+  .battito { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: .85em; color: var(--tenue); }
+  .battito .faro { width: 22px; height: 22px; border-radius: 50%; background: var(--c); box-shadow: 0 0 14px var(--c);
+    animation: lampo var(--t) linear infinite; flex: none; }
+  @keyframes lampo { 0% { opacity: 1; transform: scale(1.15); } 12% { opacity: .15; transform: scale(.8); } 100% { opacity: .15; transform: scale(.8); } }
+  #pin { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+  .pin { position: absolute; pointer-events: auto; cursor: pointer; transform: translate(-50%, -100%);
+    display: flex; flex-direction: column; align-items: center; }
+  .pin .testa { display: flex; align-items: center; gap: 6px; background: rgba(8, 12, 24, .86); border: 2px solid var(--c);
+    border-radius: 18px; padding: 2px 10px 2px 6px; white-space: nowrap; font-size: .76em; box-shadow: 0 2px 8px #0008; }
+  .pin .testa .ic { font-size: 1.05em; }
+  .pin .stelo { width: 2px; height: 10px; background: var(--c); opacity: .8; }
+  .pin .punta { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--c); box-shadow: 0 0 6px var(--c); }
+  .pin:hover .testa { background: #1b2742; }
+  .pin.scelto .testa { border-color: var(--oro); box-shadow: 0 0 12px var(--oro); }
+  .cost { position: absolute; transform: translate(-50%, -50%); color: rgba(150, 180, 255, .6); font-size: .78em;
+    letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; pointer-events: none; text-shadow: 0 0 4px #000; }
+  #suggerimento { position: fixed; pointer-events: none; background: rgba(10, 14, 26, .95); border: 1px solid var(--bordo);
+    border-radius: 8px; padding: 5px 9px; font-size: .85em; display: none; white-space: nowrap; z-index: 5; }
+  #orologio { position: fixed; left: 50%; transform: translateX(-50%); top: 8px; color: rgba(220, 230, 255, .55); font-size: .78em; z-index: 3;
+    pointer-events: none; text-shadow: 0 0 4px #000; }
+  #firma { position: fixed; right: 14px; bottom: 10px; color: rgba(255, 255, 255, .38); font-size: .8em; pointer-events: none; z-index: 3; }
+  #aiuto { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); padding: 8px 14px; font-size: .82em;
+    color: var(--tenue); text-align: center; max-width: 56%; z-index: 3; }
+  #comandi { position: fixed; right: 14px; bottom: 36px; padding: 8px; display: grid; z-index: 3;
+    grid-template-columns: repeat(3, 54px); grid-template-rows: repeat(3, 54px); gap: 6px; }
+  #comandi button { font-size: 1.5em; padding: 0; line-height: 1; touch-action: none; user-select: none; }
+  #comandi .vuoto { visibility: hidden; }
+  #avviso { position: fixed; top: 36px; left: 50%; transform: translateX(-50%); padding: 10px 16px; z-index: 6; display: none;
+    font-size: .9em; }
+  #avviso button { margin-left: 10px; }
+  #cartolina { position: fixed; left: 50%; bottom: 60px; transform: translateX(-50%); max-width: 680px; padding: 14px 22px;
+    display: none; z-index: 6; text-align: center; transition: opacity 1.2s; }
+  #cartolina .nome { font-size: 1.6em; font-weight: 600; }
+  #cartolina .tipo { color: var(--c); font-size: .95em; margin: 2px 0 6px; }
+  #cartolina .testo { color: #cdd7ee; font-size: .92em; }
+  #caricamento { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.3em;
+    background: var(--fondo); z-index: 10; flex-direction: column; gap: 10px; }
+  body.ss #sx, body.ss #dx, body.ss #aiuto, body.ss #comandi, body.ss #suggerimento { display: none !important; }
+  body.ss, body.ss #scena, body.ss .pin { cursor: none; }
+  body.ss #cartolina { display: block; }
+  #menu { position: fixed; top: 10px; left: 10px; z-index: 7; display: none; font-size: 1.3em; padding: 6px 13px; }
+  @media (max-width: 1000px) { #sx { width: 290px; } #dx { width: 320px; } #aiuto { display: none; } }
+  /* cellulare: pannello a scomparsa (☰), scheda che sale dal basso, niente pulsanti di navigazione */
+  @media (max-width: 760px), (pointer: coarse) and (max-width: 1100px) {
+    :root { --base: 16px; }
+    #menu { display: block; }
+    #sx { display: none; top: 0; left: 0; width: 100%; max-height: 78%; border-radius: 0 0 14px 14px; padding-top: 52px; }
+    body.menu #sx { display: block; }
+    #dx { top: auto; bottom: 0; left: 0; right: 0; width: 100%; max-height: 58%; border-radius: 14px 14px 0 0;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+    #aiuto, #comandi { display: none; }
+    #orologio { top: 14px; left: auto; right: 10px; transform: none; font-size: .62em; text-align: right; max-width: 60%; }
+    #firma { bottom: 4px; right: 8px; font-size: .62em; }
+    .pin .testa { font-size: .68em; padding: 1px 8px 1px 4px; }
+    .cost { font-size: .62em; }
+    #cartolina { bottom: 30px; max-width: 94%; padding: 10px 14px; }
+    #cartolina .nome { font-size: 1.25em; }
+    #avviso { top: 56px; max-width: 94%; }
+    button, select { padding: 9px 12px; }
+  }
+</style>
+<script type="importmap">{ "imports": { "three": "./lib/three.module.js" } }</script>
+</head>
+<body>
+<canvas id="scena"></canvas>
+<button id="menu" class="pannello" title="Menu">☰</button>
+<div id="pin"></div>
+<div id="caricamento"><img src="./web/icona.png" alt="" style="width:128px;height:128px" onerror="this.remove()">
+  <div>Cielo di Einstein@Home</div><div id="stato_car" style="color:#9ba9c6;font-size:.8em">preparo la sfera celeste…</div></div>
+
+<div id="sx" class="pannello">
+  <h1>🌠 Cielo di Einstein@Home</h1>
+  <div class="sotto">Le pulsar e le onde gravitazionali che cerchiamo · © 2026 Edoardo Battistel</div>
+  <input id="cerca" type="search" placeholder="Cerca: Granchio, Vela, J0437, Cas A, GW170817, LIGO…" autocomplete="off">
+  <div id="risultati"></div>
+
+  <h2>Vista</h2>
+  <div class="bottoni">
+    <button id="v_fuori" class="attivo" title="La sfera celeste vista da fuori, con la Terra al centro">🌍 Da fuori</button>
+    <button id="v_dentro" title="Il cielo visto dal centro, come in un planetario">🔭 Dall'interno</button>
+    <button id="ruota" class="attivo" title="Barra spaziatrice">⏸ Ferma</button>
+  </div>
+  <div class="bottoni" style="margin-top:6px">
+    <button id="b_ss" title="Tasto S">🖥️ Salvaschermo</button>
+    <button id="b_intero" title="Tasto F">⛶ Schermo intero</button>
+  </div>
+  <label class="casella" style="margin-top:6px">Salvaschermo da solo dopo
+    <select id="ss_auto"><option value="0">mai</option><option value="2">2 min</option><option value="5">5 min</option>
+      <option value="10">10 min</option><option value="20">20 min</option></select></label>
+
+  <h2>Oggetti</h2>
+  <div id="strati"></div>
+  <details id="det_gw"><summary>Elenco onde gravitazionali</summary><div id="elenco_gw"></div></details>
+
+  <h2>Cielo e Terra</h2>
+  <label class="casella"><input type="checkbox" id="c_stelle" checked> ✨ Stelle</label>
+  <label class="casella"><input type="checkbox" id="c_cost" checked> Costellazioni</label>
+  <label class="casella"><input type="checkbox" id="c_nomi_cost" checked> Nomi delle costellazioni</label>
+  <label class="casella"><input type="checkbox" id="c_vialattea" checked> Via Lattea e piano galattico</label>
+  <label class="casella"><input type="checkbox" id="c_griglia" checked> Griglia ed eclittica</label>
+  <label class="casella"><input type="checkbox" id="c_terra" checked> 🌍 Terra, osservatori e Fermi</label>
+  <label class="casella"><input type="checkbox" id="c_fasci" checked> Dove guardano adesso i rivelatori</label>
+  <label class="casella"><input type="checkbox" id="c_pin" checked> 📍 Nomi degli oggetti</label>
+  <h2>Grandezza dei pallini <span id="grandezza_n" style="float:right;text-transform:none"></span></h2>
+  <input type="range" id="grandezza" min="0.5" max="2.5" step="0.1" value="1.2">
+  <div style="color:#9ba9c6;font-size:.75em;margin-top:2px">Avvicinandoti diventano anche un po' più grandi</div>
+  <h2>Quantità di nomi</h2>
+  <input type="range" id="n_pin" min="2" max="40" step="1" value="12">
+  <div id="info_dati" style="color:#9ba9c6;font-size:.75em;margin-top:12px"></div>
+</div>
+
+<div id="dx" class="pannello">
+  <button id="chiudi" title="Chiudi (Esc)">✕</button>
+  <div id="scheda"></div>
+</div>
+
+<div id="aiuto" class="pannello">Trascina per girare · <b>rotellina</b> o <b>+ −</b> per avvicinarti · <b>frecce</b> per girare ·
+  clic su un oggetto per la scheda · <b>S</b> salvaschermo · <b>F</b> schermo intero</div>
+<div id="comandi" class="pannello" title="Tieni premuto">
+  <button data-c="piu" title="Avvicina (+)">＋</button>
+  <button data-c="su" title="Su (↑)">▲</button>
+  <button data-c="meno" title="Allontana (−)">−</button>
+  <button data-c="sx" title="Sinistra (←)">◀</button>
+  <button id="c_inizio" title="Vista iniziale">🏠</button>
+  <button data-c="dx" title="Destra (→)">▶</button>
+  <span class="vuoto"></span>
+  <button data-c="giu" title="Giù (↓)">▼</button>
+  <span class="vuoto"></span>
+</div>
+<div id="avviso" class="pannello"></div>
+<div id="cartolina" class="pannello"></div>
+<div id="suggerimento"></div>
+<div id="orologio"></div>
+<div id="firma">© 2026 Edoardo Battistel · Cielo di Einstein@Home</div>
+
+<script type="module" src="./web/app.js"></script>
+</body>
+</html>
